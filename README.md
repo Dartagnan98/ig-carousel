@@ -6,6 +6,8 @@ A Claude Code skill that generates Instagram carousel posts from a locked design
 
 Builds a swipeable carousel deck from a fixed design. The design — clay-Joe character, circuit-board background, terminal cards, HPA branding, fonts, colors — never changes. Only the content in `slidesData` varies per carousel. Joe's poses auto-rotate through the bundled PNGs.
 
+On request it also exports every slide to a 1080×1350 JPEG and posts the carousel straight to Instagram via Composio (after you confirm the slides and caption).
+
 ## Install
 
 Clone into your Claude Code skills directory:
@@ -24,4 +26,5 @@ The skill copies `template.html` → `/tmp/carousel-{topic-slug}.html` and `asse
 
 - `template.html` — the locked carousel design
 - `assets/` — Joe pose PNGs, HPA logo, Recoleta font
-- `SKILL.md` — generation instructions
+- `export.mjs` — Playwright slide-to-JPEG exporter (1080×1350)
+- `SKILL.md` — generation + export + Instagram posting instructions

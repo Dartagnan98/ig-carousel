@@ -85,6 +85,54 @@ The `carousel-assets/` folder must sit next to the HTML and be served over http 
 
 Load `localhost:8899/carousel-{slug}.html`, wait ~3s for fonts, screenshot. The `layout()` JS flows sub/spark/terminal below the rendered headline after fonts load — check no terminal card collides with the footer. Iterate on specific slides; don't rebuild.
 
+### Step 6 — Export to images
+
+Once the user is happy with the preview, export every slide to an Instagram-ready JPEG (1080×1350, 4:5):
+
+```bash
+node ~/.claude/skills/ig-carousel/export.mjs \
+  "http://localhost:8899/carousel-{slug}.html" \
+  /tmp/carousel-export
+```
+
+`export.mjs` uses Playwright. It renders each `.slide` at exactly 1080×1350 JPEG quality 95 and writes `slide-01.jpg … slide-NN.jpg`. The carousel URL MUST be http (assets are http-served). It prints a JSON list of the written files.
+
+### Step 7 — Post to Instagram via Composio
+
+Only do this when the user asks to post/publish. Posting is public and irreversible.
+
+1. **Connect the account** (once): if a later command says the toolkit is not connected, run `composio link instagram`.
+2. **Resolve the publishing account id:**
+   ```bash
+   composio execute INSTAGRAM_GET_USER_INFO -d '{}'
+   ```
+   Take the numeric Instagram Business account id → `ig_user_id`.
+3. **Draft the caption.** Match the carousel: short hook, the 5 moves or topic beats, then the outro CTA wording (e.g. `Comment "FRAMEWORK" 👇`). Max 2,200 chars, max 30 hashtags.
+4. **Get explicit user confirmation.** Show the user the exported slide images, the final slide order, and the draft caption. Wait for a clear "yes" in chat before publishing. Do NOT publish on assumed permission — publishing public content always requires confirmation.
+5. **Create the carousel container** (2–10 slides, ordered):
+   ```bash
+   composio execute INSTAGRAM_CREATE_CAROUSEL_CONTAINER -d '{
+     "ig_user_id": "<id>",
+     "caption": "<caption>",
+     "child_image_files": [
+       "/tmp/carousel-export/slide-01.jpg",
+       "/tmp/carousel-export/slide-02.jpg",
+       "... in slide order ..."
+     ]
+   }'
+   ```
+   Store `response.data.id` as `creation_id`.
+6. **Publish:**
+   ```bash
+   composio execute INSTAGRAM_POST_IG_USER_MEDIA_PUBLISH -d '{
+     "ig_user_id": "<id>",
+     "creation_id": "<creation_id>"
+   }'
+   ```
+   Report the published `permalink` back to the user.
+
+Pitfalls: slides must be JPEG, 4:5 aspect (the exporter already enforces 1080×1350); a single bad asset fails the whole container; publishing the same `creation_id` twice returns 409 — make a fresh container to retry; if near the publishing limit, `INSTAGRAM_GET_IG_USER_CONTENT_PUBLISHING_LIMIT` shows headroom.
+
 ---
 
 ## Design (locked — reference only)
@@ -105,3 +153,4 @@ This design is fixed. If the user wants a different look, that's a new template,
 1. Copy `template.html` → `/tmp/carousel-{topic-slug}.html` and `assets/` → `/tmp/carousel-assets/`.
 2. Rewrite only the `slidesData` EDIT ZONE in the output file.
 3. Preview via the http server, verify layout, iterate on specific slides.
+4. On request: export to JPEGs with `export.mjs`, then post the carousel to Instagram via Composio — after explicit user confirmation of the slides and caption.
