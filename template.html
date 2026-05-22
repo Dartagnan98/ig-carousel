@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HPA Carousel</title>
+<!--
+  ============================================================
+  HPA INSTAGRAM CAROUSEL TEMPLATE  —  ig-carousel skill
+  ============================================================
+  The DESIGN is locked. Do NOT touch CSS, layout(), nav, or the
+  clay-Joe rotation. Only edit ONE thing: the `slidesData` array
+  in the <script> block below.
+
+  Per slide you set: cover/outro flags, kicker, hl, sub, term.
+  Everything else is automatic:
+    - slide number + total  -> from array length
+    - clay Joe pose         -> auto-rotates through the PNG set
+    - vertical rhythm        -> layout() flows it after fonts load
+
+  Requires a sibling folder `carousel-assets/` (joe poses,
+  hpa-logo.png, recoleta.otf) served from the same origin.
+  ============================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://use.typekit.net/opc6jxu.css">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Archivo:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  @font-face{
+    font-family:'Recoleta';
+    src:url('carousel-assets/recoleta.otf') format('opentype');
+    font-weight:400;font-display:swap;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:'Archivo',sans-serif;
+    background:#15120c;
+    display:flex;align-items:center;justify-content:center;
+    min-height:100vh;padding:30px 14px;
+  }
+  .frame{width:432px;}
+
+  .viewport{
+    position:relative;width:432px;height:540px;
+    overflow:hidden;border-radius:5px;
+    box-shadow:0 30px 70px -22px rgba(0,0,0,.85);
+  }
+  .track{display:flex;height:100%;transition:transform .4s cubic-bezier(.4,0,.2,1);}
+
+  /* ===== SLIDE ===== */
+  .slide{
+    position:relative;width:432px;height:540px;flex-shrink:0;
+    overflow:hidden;
+    background:#efe9db;
+  }
+  /* circuit texture */
+  .slide .pcb{
+    position:absolute;inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22420%22%20height%3D%22525%22%20viewBox%3D%220%200%20420%20525%22%3E%3Cg%20fill%3D%22none%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M135%200%20L180%200%20L180%2030%20L255%2030%20L255%200%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.8%22%2F%3E%3Cpath%20d%3D%22M0%20150%20L0%20120%20L45%20120%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Cpath%20d%3D%22M405%20525%20L420%20525%20L420%20495%20L300%20495%20L300%20405%20L180%20405%22%20stroke%3D%22%23eb4511%22%20stroke-width%3D%221.5%22%2F%3E%3Cpath%20d%3D%22M0%2030%20L0%2060%20L120%2060%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.1%22%2F%3E%3Cpath%20d%3D%22M420%2075%20L420%20150%20L420%2060%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.5%22%2F%3E%3Cpath%20d%3D%22M75%20525%20L0%20525%20L0%20450%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.9%22%2F%3E%3Cpath%20d%3D%22M0%2090%20L45%2090%20L45%2015%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.7%22%2F%3E%3Cpath%20d%3D%22M0%2045%20L0%200%20L90%200%22%20stroke%3D%22%23eb4511%22%20stroke-width%3D%221.5%22%2F%3E%3Cpath%20d%3D%22M0%20285%20L0%20375%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.1%22%2F%3E%3Cpath%20d%3D%22M0%20255%20L0%20135%20L0%20180%20L0%20270%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Cpath%20d%3D%22M210%20525%20L330%20525%20L330%20480%20L375%20480%20L375%20360%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.4%22%2F%3E%3Cpath%20d%3D%22M315%20525%20L315%20465%20L255%20465%20L255%20525%20L300%20525%20L300%20495%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.7%22%2F%3E%3Cpath%20d%3D%22M330%200%20L300%200%20L300%2045%20L210%2045%20L210%2075%22%20stroke%3D%22%23eb4511%22%20stroke-width%3D%221.6%22%2F%3E%3Cpath%20d%3D%22M180%20525%20L135%20525%20L165%20525%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Cpath%20d%3D%22M0%20465%20L0%20525%20L90%20525%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.9%22%2F%3E%3Cpath%20d%3D%22M225%20435%20L270%20435%20L270%20405%20L390%20405%20L390%20480%20L420%20480%22%20stroke%3D%22%23eb4511%22%20stroke-width%3D%221.6%22%2F%3E%3Cpath%20d%3D%22M285%20255%20L195%20255%20L195%20285%20L75%20285%20L75%20255%20L135%20255%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.7%22%2F%3E%3Cpath%20d%3D%22M270%2045%20L240%2045%20L240%200%20L150%200%20L150%2030%20L60%2030%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.4%22%2F%3E%3Cpath%20d%3D%22M60%20480%20L60%20435%20L0%20435%20L0%20525%20L120%20525%22%20stroke%3D%22%23eb4511%22%20stroke-width%3D%221.7%22%2F%3E%3Cpath%20d%3D%22M345%20510%20L345%20450%20L255%20450%20L255%20390%20L210%20390%20L210%20345%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.5%22%2F%3E%3Cpath%20d%3D%22M405%20495%20L420%20495%20L420%20525%20L345%20525%20L420%20525%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.9%22%2F%3E%3Cpath%20d%3D%22M270%20165%20L270%2045%20L360%2045%20L360%200%20L315%200%20L315%2030%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.1%22%2F%3E%3Cpath%20d%3D%22M120%20315%20L120%20405%20L240%20405%20L240%20525%20L210%20525%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Cpath%20d%3D%22M240%20465%20L180%20465%20L180%20420%20L90%20420%20L90%20390%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.6%22%2F%3E%3Cpath%20d%3D%22M30%20495%20L30%20420%20L60%20420%20L60%20345%20L120%20345%20L120%20420%20L0%20420%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.4%22%2F%3E%3Cpath%20d%3D%22M225%20150%20L225%2030%20L270%2030%20L270%20105%20L300%20105%22%20stroke%3D%22%23eb4511%22%20stroke-width%3D%221.3%22%2F%3E%3Cpath%20d%3D%22M150%20180%20L150%20120%20L75%20120%20L75%2045%20L0%2045%20L0%20165%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.5%22%2F%3E%3Cpath%20d%3D%22M255%20345%20L210%20345%20L210%20285%20L300%20285%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.2%22%2F%3E%3Cpath%20d%3D%22M75%20360%20L135%20360%20L135%20420%20L15%20420%20L15%20495%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.6%22%2F%3E%3Cpath%20d%3D%22M105%2090%20L105%200%20L30%200%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.8%22%2F%3E%3Cpath%20d%3D%22M345%20450%20L345%20330%20L300%20330%20L300%20420%22%20stroke%3D%22%23eb4511%22%20stroke-width%3D%221.5%22%2F%3E%3Cpath%20d%3D%22M255%20210%20L255%20240%20L210%20240%20L210%20195%20L285%20195%20L285%20285%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Cpath%20d%3D%22M90%20120%20L0%20120%20L0%200%20L30%200%20L30%2030%20L0%2030%20L0%2090%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.9%22%2F%3E%3Cpath%20d%3D%22M180%2090%20L180%2030%20L105%2030%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.4%22%2F%3E%3Cpath%20d%3D%22M405%20375%20L405%20435%20L360%20435%20L360%20525%20L270%20525%22%20stroke%3D%22%23eb4511%22%20stroke-width%3D%221.2%22%2F%3E%3Cpath%20d%3D%22M360%20255%20L300%20255%20L300%20195%20L210%20195%20L210%20255%20L270%20255%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.6%22%2F%3E%3Cpath%20d%3D%22M360%20300%20L300%20300%20L300%20270%20L390%20270%20L390%20150%20L420%20150%20L420%20180%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.4%22%2F%3E%3Cpath%20d%3D%22M30%20165%20L30%2045%20L0%2045%20L0%20120%20L0%20195%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.8%22%2F%3E%3Cpath%20d%3D%22M240%20225%20L300%20225%20L300%20345%20L375%20345%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.2%22%2F%3E%3Cpath%20d%3D%22M255%20465%20L255%20525%20L300%20525%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.5%22%2F%3E%3Cpath%20d%3D%22M360%20345%20L360%20420%20L330%20420%20L330%20480%20L420%20480%20L420%20525%20L390%20525%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.6%22%2F%3E%3Cpath%20d%3D%22M165%2075%20L255%2075%20L255%20165%20L225%20165%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.7%22%2F%3E%3Cpath%20d%3D%22M135%20165%20L135%2075%20L15%2075%20L15%20120%20L0%20120%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.7%22%2F%3E%3Cpath%20d%3D%22M210%20255%20L90%20255%20L90%20135%20L165%20135%20L165%2075%20L210%2075%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.1%22%2F%3E%3Cpath%20d%3D%22M135%20195%20L135%20120%20L15%20120%20L15%20240%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.2%22%2F%3E%3Cpath%20d%3D%22M285%2030%20L330%2030%20L330%200%20L375%200%20L375%2030%20L420%2030%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.2%22%2F%3E%3Cpath%20d%3D%22M270%20465%20L150%20465%20L150%20525%20L75%20525%20L75%20450%20L195%20450%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.8%22%2F%3E%3Cpath%20d%3D%22M165%20165%20L165%20240%20L45%20240%20L45%20180%20L165%20180%20L165%20225%20L255%20225%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.6%22%2F%3E%3Cpath%20d%3D%22M285%20180%20L315%20180%20L315%20105%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.1%22%2F%3E%3C%2Fg%3E%3Ccircle%20cx%3D%22135%22%20cy%3D%220%22%20r%3D%222.4%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%220%22%20r%3D%223.3%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22255%22%20cy%3D%2230%22%20r%3D%222.3%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22255%22%20cy%3D%220%22%20r%3D%222.3%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%22150%22%20r%3D%222.5%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%22120%22%20r%3D%222.5%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%2245%22%20cy%3D%22120%22%20r%3D%222.6%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22405%22%20cy%3D%22525%22%20r%3D%223.2%22%20fill%3D%22%23eb4511%22%2F%3E%3Ccircle%20cx%3D%22420%22%20cy%3D%22495%22%20r%3D%222.1%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22300%22%20cy%3D%22405%22%20r%3D%223.2%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22405%22%20r%3D%223.2%22%20fill%3D%22%23eb4511%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%2230%22%20r%3D%222.5%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%2260%22%20r%3D%222.8%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22420%22%20cy%3D%2275%22%20r%3D%222.4%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22420%22%20cy%3D%22150%22%20r%3D%223.3%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22420%22%20cy%3D%2260%22%20r%3D%223.4%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%2275%22%20cy%3D%22525%22%20r%3D%222.2%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%22450%22%20r%3D%222.8%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%2290%22%20r%3D%223.2%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%2245%22%20cy%3D%2290%22%20r%3D%222.5%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%2245%22%20cy%3D%2215%22%20r%3D%223.0%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%2245%22%20r%3D%223.2%22%20fill%3D%22%23eb4511%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%220%22%20r%3D%223.1%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%2290%22%20cy%3D%220%22%20r%3D%222.0%22%20fill%3D%22%23eb4511%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%22285%22%20r%3D%222.4%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%22375%22%20r%3D%222.9%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%22255%22%20r%3D%222.1%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%22135%22%20r%3D%223.0%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%22270%22%20r%3D%223.0%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22210%22%20cy%3D%22525%22%20r%3D%222.6%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22330%22%20cy%3D%22525%22%20r%3D%222.7%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22375%22%20cy%3D%22360%22%20r%3D%222.5%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22315%22%20cy%3D%22525%22%20r%3D%223.0%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22315%22%20cy%3D%22465%22%20r%3D%222.7%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22255%22%20cy%3D%22465%22%20r%3D%223.0%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22300%22%20cy%3D%22495%22%20r%3D%222.7%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22330%22%20cy%3D%220%22%20r%3D%222.7%22%20fill%3D%22%23eb4511%22%2F%3E%3Ccircle%20cx%3D%22300%22%20cy%3D%2245%22%20r%3D%222.4%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22210%22%20cy%3D%2275%22%20r%3D%223.3%22%20fill%3D%22%23eb4511%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22525%22%20r%3D%221.8%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22135%22%20cy%3D%22525%22%20r%3D%222.0%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22165%22%20cy%3D%22525%22%20r%3D%222.7%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%22465%22%20r%3D%221.9%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%2290%22%20cy%3D%22525%22%20r%3D%222.1%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22225%22%20cy%3D%22435%22%20r%3D%222.8%22%20fill%3D%22%23eb4511%22%2F%3E%3Ccircle%20cx%3D%22270%22%20cy%3D%22435%22%20r%3D%222.3%22%20fill%3D%22none%22%20stroke%3D%22%23eb4511%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22420%22%20cy%3D%22480%22%20r%3D%222.5%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22285%22%20cy%3D%22255%22%20r%3D%222.1%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22195%22%20cy%3D%22255%22%20r%3D%223.1%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%2275%22%20cy%3D%22255%22%20r%3D%223.2%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22135%22%20cy%3D%22255%22%20r%3D%222.0%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22270%22%20cy%3D%2245%22%20r%3D%222.2%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22240%22%20cy%3D%2245%22%20r%3D%222.7%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22150%22%20cy%3D%220%22%20r%3D%223.1%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22150%22%20cy%3D%2230%22%20r%3D%223.4%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%2230%22%20r%3D%223.1%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%22480%22%20r%3D%222.9%22%20fill%3D%22%23eb4511%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%22435%22%20r%3D%222.6%22%20fill%3D%22%23eb4511%22%2F%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22525%22%20r%3D%222.5%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22345%22%20cy%3D%22510%22%20r%3D%222.1%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22345%22%20cy%3D%22450%22%20r%3D%222.8%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22255%22%20cy%3D%22450%22%20r%3D%223.0%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22255%22%20cy%3D%22390%22%20r%3D%222.6%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22210%22%20cy%3D%22345%22%20r%3D%223.2%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22405%22%20cy%3D%22495%22%20r%3D%222.9%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22420%22%20cy%3D%22525%22%20r%3D%222.7%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22270%22%20cy%3D%22165%22%20r%3D%222.2%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22315%22%20cy%3D%2230%22%20r%3D%223.3%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22120%22%20cy%3D%22315%22%20r%3D%221.9%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22210%22%20cy%3D%22525%22%20r%3D%223.3%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22240%22%20cy%3D%22465%22%20r%3D%223.1%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22465%22%20r%3D%222.3%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%22420%22%20r%3D%222.0%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%2290%22%20cy%3D%22390%22%20r%3D%223.0%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%22495%22%20r%3D%223.0%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%22420%22%20r%3D%222.6%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%22420%22%20r%3D%222.9%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22225%22%20cy%3D%22150%22%20r%3D%223.2%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22300%22%20cy%3D%22105%22%20r%3D%223.2%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22150%22%20cy%3D%22180%22%20r%3D%223.0%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22150%22%20cy%3D%22120%22%20r%3D%223.0%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%2275%22%20cy%3D%22120%22%20r%3D%222.2%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%22165%22%20r%3D%222.0%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22255%22%20cy%3D%22345%22%20r%3D%222.6%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22210%22%20cy%3D%22285%22%20r%3D%222.2%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22300%22%20cy%3D%22285%22%20r%3D%223.0%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%2275%22%20cy%3D%22360%22%20r%3D%223.3%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%2215%22%20cy%3D%22495%22%20r%3D%222.0%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22105%22%20cy%3D%2290%22%20r%3D%222.5%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22105%22%20cy%3D%220%22%20r%3D%222.7%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%220%22%20r%3D%223.0%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22345%22%20cy%3D%22450%22%20r%3D%223.2%22%20fill%3D%22%23eb4511%22%2F%3E%3Ccircle%20cx%3D%22300%22%20cy%3D%22420%22%20r%3D%222.3%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22255%22%20cy%3D%22210%22%20r%3D%222.7%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22210%22%20cy%3D%22195%22%20r%3D%223.0%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22285%22%20cy%3D%22285%22%20r%3D%223.0%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%2290%22%20cy%3D%22120%22%20r%3D%222.6%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%22120%22%20r%3D%222.2%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%220%22%20r%3D%222.9%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%2230%22%20r%3D%222.1%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%2290%22%20r%3D%222.8%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%2290%22%20r%3D%223.2%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22105%22%20cy%3D%2230%22%20r%3D%222.0%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22405%22%20cy%3D%22375%22%20r%3D%222.5%22%20fill%3D%22%23eb4511%22%2F%3E%3Ccircle%20cx%3D%22270%22%20cy%3D%22525%22%20r%3D%222.8%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22360%22%20cy%3D%22255%22%20r%3D%222.5%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22300%22%20cy%3D%22195%22%20r%3D%221.8%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22210%22%20cy%3D%22195%22%20r%3D%222.1%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22270%22%20cy%3D%22255%22%20r%3D%223.0%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22360%22%20cy%3D%22300%22%20r%3D%222.8%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22300%22%20cy%3D%22300%22%20r%3D%223.0%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22300%22%20cy%3D%22270%22%20r%3D%223.0%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22390%22%20cy%3D%22150%22%20r%3D%222.6%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22420%22%20cy%3D%22150%22%20r%3D%222.7%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22420%22%20cy%3D%22180%22%20r%3D%222.2%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%22165%22%20r%3D%223.3%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%22120%22%20r%3D%223.1%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%22195%22%20r%3D%222.6%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22240%22%20cy%3D%22225%22%20r%3D%221.9%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22300%22%20cy%3D%22225%22%20r%3D%222.8%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22375%22%20cy%3D%22345%22%20r%3D%223.2%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22255%22%20cy%3D%22465%22%20r%3D%223.0%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22300%22%20cy%3D%22525%22%20r%3D%222.0%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22360%22%20cy%3D%22345%22%20r%3D%222.7%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22360%22%20cy%3D%22420%22%20r%3D%223.0%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22420%22%20cy%3D%22480%22%20r%3D%223.3%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22420%22%20cy%3D%22525%22%20r%3D%222.9%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22390%22%20cy%3D%22525%22%20r%3D%222.0%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22165%22%20cy%3D%2275%22%20r%3D%222.2%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22255%22%20cy%3D%22165%22%20r%3D%222.0%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22225%22%20cy%3D%22165%22%20r%3D%222.4%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22135%22%20cy%3D%22165%22%20r%3D%222.0%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%22120%22%20r%3D%223.3%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22210%22%20cy%3D%22255%22%20r%3D%222.1%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%2290%22%20cy%3D%22135%22%20r%3D%222.6%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22210%22%20cy%3D%2275%22%20r%3D%222.1%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22135%22%20cy%3D%22195%22%20r%3D%222.8%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%2215%22%20cy%3D%22120%22%20r%3D%222.2%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%2215%22%20cy%3D%22240%22%20r%3D%223.3%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22285%22%20cy%3D%2230%22%20r%3D%222.5%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22330%22%20cy%3D%2230%22%20r%3D%222.1%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22330%22%20cy%3D%220%22%20r%3D%222.4%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22420%22%20cy%3D%2230%22%20r%3D%223.3%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22270%22%20cy%3D%22465%22%20r%3D%222.9%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22195%22%20cy%3D%22450%22%20r%3D%222.1%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22165%22%20cy%3D%22165%22%20r%3D%223.2%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22165%22%20cy%3D%22240%22%20r%3D%222.4%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22165%22%20cy%3D%22225%22%20r%3D%222.1%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22255%22%20cy%3D%22225%22%20r%3D%223.4%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22285%22%20cy%3D%22180%22%20r%3D%223.0%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22315%22%20cy%3D%22105%22%20r%3D%223.2%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%2245%22%20cy%3D%22120%22%20r%3D%221.8%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22345%22%20cy%3D%22270%22%20r%3D%222.6%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%22120%22%20r%3D%222.8%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22315%22%20cy%3D%22330%22%20r%3D%222.3%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22405%22%20cy%3D%22435%22%20r%3D%223.2%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%2290%22%20cy%3D%22240%22%20r%3D%222.1%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22345%22%20cy%3D%22435%22%20r%3D%222.9%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22390%22%20cy%3D%22240%22%20r%3D%222.6%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22270%22%20cy%3D%22240%22%20r%3D%222.8%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22285%22%20cy%3D%22270%22%20r%3D%222.7%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22345%22%20cy%3D%22150%22%20r%3D%223.3%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22345%22%20cy%3D%22450%22%20r%3D%223.0%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%2275%22%20cy%3D%22150%22%20r%3D%222.0%22%20fill%3D%22%23cabfa9%22%2F%3E%3Ccircle%20cx%3D%22225%22%20cy%3D%22420%22%20r%3D%223.3%22%20fill%3D%22none%22%20stroke%3D%22%23cabfa9%22%20stroke-width%3D%221.3%22%2F%3E%3C%2Fsvg%3E");
+    background-size:cover;
+    background-position:center;
+    opacity:.2;
+  }
+  /* warm wash + soft top glow */
+  .slide .wash{
+    position:absolute;inset:0;
+    background:
+      radial-gradient(60% 36% at 26% 16%, rgba(235,69,17,.07) 0%, rgba(235,69,17,0) 70%),
+      radial-gradient(120% 80% at 50% 0%, rgba(255,255,255,.5) 0%, rgba(255,255,255,0) 55%);
+  }
+  .content{position:absolute;inset:0;z-index:3;}
+
+  /* corner brackets */
+  .brk{position:absolute;width:22px;height:22px;z-index:6;}
+  .brk.tl{top:14px;left:14px;border-top:2.4px solid #eb4511;border-left:2.4px solid #eb4511;}
+  .brk.bl{bottom:14px;left:14px;border-bottom:2.4px solid #eb4511;border-left:2.4px solid #eb4511;}
+  .brk.br{bottom:14px;right:14px;border-bottom:2.4px solid #eb4511;border-right:2.4px solid #eb4511;}
+
+  /* top bar */
+  .topbar{
+    position:absolute;top:24px;left:30px;right:30px;
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:'Recoleta','Archivo',serif;
+    font-size:12px;font-weight:400;letter-spacing:1px;
+  }
+  .topbar .brand{display:flex;align-items:center;}
+  .topbar .brand svg{height:21px;width:auto;display:block;}
+  .topbar .count{color:#a89e88;}
+  .topbar .count b{color:#eb4511;font-weight:700;}
+
+  /* kicker */
+  .kicker{
+    position:absolute;top:52px;left:30px;
+    font-family:'Recoleta','Archivo',serif;
+    font-size:14px;font-weight:400;letter-spacing:1.8px;
+    color:#eb4511;
+  }
+
+  /* headline */
+  .hl{
+    position:absolute;left:30px;right:30px;top:84px;
+    font-family:'berthold-block-w1g','Archivo','Arial Black',sans-serif;
+    font-weight:700;
+    font-size:43px;
+    line-height:.93;
+    letter-spacing:-.5px;
+    color:#16130d;
+    text-transform:uppercase;
+  }
+  .hl .o{color:#eb4511;}
+  .slide.cover .hl{font-size:33px;line-height:.96;top:80px;}
+
+  /* sub */
+  .sub{
+    position:absolute;left:30px;right:96px;
+    font-family:'Recoleta','Archivo',serif;
+    font-weight:400;
+    font-size:16.5px;
+    line-height:1.4;
+    letter-spacing:.1px;
+    color:#6b6452;
+  }
+  .sub b{color:#16130d;font-weight:400;}
+
+  /* sparkle */
+  .spark{
+    position:absolute;left:30px;
+    width:16px;height:16px;color:#eb4511;
+  }
+
+  /* terminal card */
+  .term{
+    position:absolute;left:30px;
+    width:348px;
+    background:#1d1a14;
+    border-radius:12px;
+    box-shadow:0 16px 34px -12px rgba(40,20,5,.5);
+    overflow:hidden;
+    z-index:4;
+  }
+  .term .bar{
+    height:30px;
+    display:flex;align-items:center;gap:7px;
+    padding:0 14px;
+    background:#272219;
+    border-bottom:1px solid #332c20;
+  }
+  .term .bar i{width:9px;height:9px;border-radius:50%;display:block;}
+  .term .bar .r{background:#f0584b;}
+  .term .bar .y{background:#f1bd3a;}
+  .term .bar .g{background:#5ec45e;}
+  .term .bar span{
+    margin-left:7px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;letter-spacing:1px;color:#6f6750;
+  }
+  .term .body{padding:16px 18px 18px;}
+  .term .ln{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12.5px;line-height:2.0;
+    color:#d8d0bd;
+    white-space:nowrap;
+  }
+  .term .ln .c{color:#eb4511;font-weight:700;}
+  .term .ln .a{color:#6f6750;}
+  .term .ln .ok{color:#5ec45e;font-weight:700;}
+  .term .ln strong{color:#fff;font-weight:500;}
+
+  /* clay joe */
+  .joe{
+    position:absolute;z-index:5;
+    bottom:128px;right:4px;
+    height:192px;
+    filter:drop-shadow(0 12px 16px rgba(40,20,5,.32));
+  }
+  .slide.cover .joe{height:214px;bottom:58px;}
+
+  /* watermark */
+  .wm{
+    position:absolute;left:0;right:0;
+    bottom:56px;
+    text-align:center;
+    font-family:'JetBrains Mono',monospace;
+    font-size:9px;letter-spacing:2px;
+    color:rgba(80,72,54,.34);
+  }
+
+  /* footer */
+  .foot{
+    position:absolute;left:30px;bottom:26px;
+    display:flex;align-items:center;gap:8px;
+    z-index:6;
+  }
+  .foot .av{
+    width:26px;height:26px;border-radius:50%;
+    background:#000;
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;
+  }
+  .foot .av img{width:26px;height:26px;object-fit:cover;display:block;}
+  .foot .fname{
+    font-family:'Archivo',sans-serif;
+    font-weight:700;font-size:11.5px;
+    color:#16130d;
+  }
+  .foot .vf{width:13px;height:13px;}
+
+  /* swipe arrow */
+  .swipe{
+    position:absolute;right:24px;bottom:22px;z-index:6;
+    width:46px;height:24px;
+  }
+
+  /* nav */
+  .dots{display:flex;justify-content:center;gap:7px;margin-top:16px;}
+  .dot{
+    width:7px;height:7px;border-radius:50%;
+    background:rgba(255,255,255,.2);border:0;cursor:pointer;padding:0;
+    transition:background .2s,transform .2s;
+  }
+  .dot.on{background:#eb4511;transform:scale(1.3);}
+  .arrow{
+    position:absolute;top:50%;z-index:9;transform:translateY(-50%);
+    width:34px;height:34px;border-radius:50%;border:0;cursor:pointer;
+    background:rgba(20,16,10,.4);color:#fff;font-size:13px;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .2s,opacity .2s;
+  }
+  .arrow:hover{background:rgba(20,16,10,.7);}
+  .arrow.prev{left:10px;}
+  .arrow.next{right:10px;}
+  .arrow.hidden{opacity:0;pointer-events:none;}
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="viewport">
+    <div class="track" id="track">
+      <!-- slides injected by script -->
+    </div>
+    <button class="arrow prev hidden" id="prev" aria-label="Previous">&#10094;</button>
+    <button class="arrow next" id="next" aria-label="Next">&#10095;</button>
+  </div>
+  <div class="dots" id="dots"></div>
+</div>
+
+<script>
+  const SPARK = '<svg class="spark" viewBox="0 0 24 24" fill="currentColor" style="TOP"><path d="M12 0c.6 5.4 2.6 7.4 12 12-9.4 4.6-11.4 6.6-12 12-.6-5.4-2.6-7.4-12-12 9.4-4.6 11.4-6.6 12-12z"/></svg>';
+  const VERIF = '<svg class="vf" viewBox="0 0 24 24"><path fill="#3897f0" d="M12 1l2.4 2.1 3.2-.3 1.3 2.9 2.9 1.3-.3 3.2L24 12l-2.1 2.4.3 3.2-2.9 1.3-1.3 2.9-3.2-.3L12 23l-2.4-2.1-3.2.3-1.3-2.9L2.2 17l.3-3.2L0 12l2.1-2.4-.3-3.2 2.9-1.3L6 2.2l3.2.3z"/><path fill="#fff" d="M10.6 14.6l-2.5-2.5-1.4 1.4 3.9 3.9 7-7-1.4-1.4z"/></svg>';
+  const SWIPE = '<svg class="swipe" viewBox="0 0 60 30" fill="none" stroke="#eb4511" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21 C 18 21, 30 17, 44 9"/><path d="M35 7 L46 8 L42 19"/></svg>';
+  const LOGO = '<svg viewBox="0 0 48 48" fill="none"><path d="M24 9 41 39H30L24 28 18 39H7Z" fill="#efe9db"/><path d="M24 9 30 21 24 30 18 21Z" fill="#eb4511"/></svg>';
+  const LOGO_DARK = '<svg viewBox="0 0 48 48" fill="none"><path d="M24 9 41 39H30L24 28 18 39H7Z" fill="#16130d"/><path d="M24 9 30 21 24 30 18 21Z" fill="#eb4511"/></svg>';
+
+  /* Clay-Joe poses. The cover always points up at the headline; every
+     other slide auto-rotates through this set (poses face the content,
+     which sits to Joe's left). Do not hand-assign poses per slide. */
+  const COVER_POSE = 'joe-point-trim.png';
+  const POSE_CYCLE = ['joe-present-trim.png','joe-pointleft-trim.png','joe-thumb-trim.png'];
+
+  /* ==========================================================
+     EDIT ZONE — this is the ONLY thing you change per carousel.
+     ----------------------------------------------------------
+     Each slide object:
+       cover : true   -> first slide (big headline, points up)
+       outro : true   -> last slide  (CTA / comment slide)
+       kicker: short orange mono label (e.g. 'MOVE 01')
+       hl    : headline. Wrap punch words in <span class="o">..</span>
+               to make them orange. Auto-uppercased.
+       sub   : Recoleta serif sub-line. Wrap key phrase in <b>..</b>.
+       term  : terminal lines, each [cls, symbol, strong, text]
+               cls: 'c' orange cmd | 'a' dim arrow | 'ok' green check
+               strong: 'strong' = white bold text, '' = normal
+               keep text <= 38 chars (mono lines do not wrap)
+     Slide number + total and the Joe pose are automatic.
+     ========================================================== */
+  const slidesData = [
+    { cover:true, kicker:'BUYER’S CONSULTATION',
+      hl:'Only 4-6% of buyers buy the first home. <span class="o">5 moves win the deal.</span>',
+      sub:'The buyer’s consultation is where the deal is really won. <b>This is the 5-part framework.</b>',
+      term:[
+        ['c','$ ','','hpa --buyer-consult'],
+        ['a','→ ','','loading 5-part framework'],
+        ['a','→ ','','refined across 1,000+ agents'],
+        ['ok','✓ ','strong','the consult that closes'] ] },
+
+    { kicker:'MOVE 01',
+      hl:'Set the <span class="o">agenda</span>',
+      sub:'Open every call by framing <b>how the process works.</b>',
+      term:[
+        ['c','$ ','','move-01 --set-agenda'],
+        ['a','→ ','','how the process works'],
+        ['a','→ ','','what happens at each step'],
+        ['a','→ ','','your role, and mine'],
+        ['ok','✓ ','strong','timeline + next steps'] ] },
+
+    { kicker:'MOVE 02',
+      hl:'Ask every <span class="o">angle</span>',
+      sub:'Cover who, what, where, when, why — <b>and how.</b>',
+      term:[
+        ['c','$ ','','move-02 --discovery'],
+        ['a','→ ','','who / what / where'],
+        ['a','→ ','','when / why'],
+        ['a','→ ','','the motivation behind it'],
+        ['ok','✓ ','strong','how — where trust is built'] ] },
+
+    { kicker:'MOVE 03',
+      hl:'Walk the <span class="o">process</span>',
+      sub:'Show financing, inspections and contracts <b>up front.</b>',
+      term:[
+        ['c','$ ','','move-03 --walk'],
+        ['a','→ ','','financing: the real budget'],
+        ['a','→ ','','inspections: know the home'],
+        ['a','→ ','','timelines: know the pace'],
+        ['ok','✓ ','strong','contracts: know the terms'] ] },
+
+    { kicker:'MOVE 04',
+      hl:'Show your <span class="o">tools</span>',
+      sub:'The alerts, the portal, the <b>direct line to you.</b>',
+      term:[
+        ['c','$ ','','move-04 --toolkit'],
+        ['a','→ ','','instant property alerts'],
+        ['a','→ ','','private client portal'],
+        ['a','→ ','','offer-ready paperwork'],
+        ['ok','✓ ','strong','a direct line to me'] ] },
+
+    { kicker:'MOVE 05',
+      hl:'Own the <span class="o">market</span>',
+      sub:'List-to-sell, days on market, <b>where prices head.</b>',
+      term:[
+        ['c','$ ','','move-05 --market'],
+        ['a','→ ','','list-to-sell ratio'],
+        ['a','→ ','','days on market'],
+        ['a','→ ','','active vs sold inventory'],
+        ['ok','✓ ','strong','where prices head next'] ] },
+
+    { kicker:'YOUR NEXT MOVE', outro:true,
+      hl:'Want the full <span class="o">framework?</span>',
+      sub:'Comment <b>“FRAMEWORK”</b> and I’ll send you the full breakdown.',
+      term:[
+        ['c','$ ','','framework --unlock'],
+        ['ok','✓ ','','set the agenda'],
+        ['ok','✓ ','','ask every angle'],
+        ['ok','✓ ','','walk the process'],
+        ['ok','✓ ','','show your tools'],
+        ['ok','✓ ','strong','own the market'] ] }
+  ];
+  /* ===================== END EDIT ZONE ===================== */
+
+  const track = document.getElementById('track');
+
+  const TOTAL = String(slidesData.length).padStart(2,'0');
+
+  slidesData.forEach((d,i) => {
+    const s = document.createElement('div');
+    s.className = 'slide' + (d.cover ? ' cover' : '') + (d.outro ? ' outro' : '');
+
+    const count = String(i+1).padStart(2,'0');
+    const pose  = d.cover ? COVER_POSE : POSE_CYCLE[(i-1) % POSE_CYCLE.length];
+
+    const termLines = d.term.map(([cls,sym,strong,txt]) => {
+      const t = strong ? '<strong>'+txt+'</strong>' : txt;
+      return '<div class="ln"><span class="'+cls+'">'+sym+'</span>'+t+'</div>';
+    }).join('');
+
+    // vertical rhythm (fallback values; refined by layout() after fonts load)
+    const subTop  = d.cover ? 268 : 150;
+    const sparkTop= d.cover ? 318 : 196;
+    const termTop = d.cover ? 344 : 224;
+
+    s.innerHTML =
+      '<div class="pcb"></div>'+
+      '<div class="wash"></div>'+
+      '<div class="content">'+
+        '<div class="topbar">'+
+          '<span class="brand">'+LOGO_DARK+'</span>'+
+          '<span class="count"><b>'+count+'</b> / '+TOTAL+'</span>'+
+        '</div>'+
+        '<div class="kicker">'+d.kicker+'</div>'+
+        '<h2 class="hl">'+d.hl.toUpperCase().replace('CLASS="O"','class="o"')+'</h2>'+
+        '<p class="sub" style="top:'+subTop+'px">'+d.sub+'</p>'+
+        SPARK.replace('TOP','top:'+sparkTop+'px')+
+        '<div class="term" style="top:'+termTop+'px"><div class="bar">'+
+          '<i class="r"></i><i class="y"></i><i class="g"></i>'+
+          '<span>hpa — zsh</span></div>'+
+          '<div class="body">'+termLines+'</div></div>'+
+        '<img class="joe" src="carousel-assets/'+pose+'" alt="">'+
+        '<div class="wm">@highperformanceagents</div>'+
+        '<div class="foot"><span class="av"><img src="carousel-assets/hpa-logo.png" alt=""></span>'+
+          '<span class="fname">highperformanceagents</span>'+VERIF+'</div>'+
+        SWIPE+
+        '<span class="brk tl"></span><span class="brk bl"></span><span class="brk br"></span>'+
+      '</div>';
+    track.appendChild(s);
+  });
+
+  const slides = [...track.children];
+  const total  = slides.length;
+  const SLIDE_W = 432;
+
+  // Flow sub / sparkle / terminal below the actual rendered headline so
+  // 1-line and 2-line headlines never collide with the sub copy.
+  function layout(){
+    slides.forEach(s=>{
+      const cover = s.classList.contains('cover');
+      const hl    = s.querySelector('.hl');
+      const sub   = s.querySelector('.sub');
+      const spark = s.querySelector('.spark');
+      const term  = s.querySelector('.term');
+      if(!hl||!sub||!spark||!term) return;
+      const hlTop  = cover ? 80 : 84;
+      const subTop = hlTop + hl.offsetHeight + (cover ? 22 : 20);
+      sub.style.top = subTop + 'px';
+      const sparkTop = subTop + sub.offsetHeight + 15;
+      spark.style.top = sparkTop + 'px';
+      let termTop = sparkTop + 30;
+      // never let the card run into the footer
+      const maxBot = 482;
+      if(termTop + term.offsetHeight > maxBot){
+        termTop = Math.max(sparkTop + 22, maxBot - term.offsetHeight);
+      }
+      term.style.top = termTop + 'px';
+    });
+  }
+  if(document.fonts && document.fonts.ready){ document.fonts.ready.then(layout); }
+  setTimeout(layout, 400);
+  setTimeout(layout, 1200);
+  const dotsWrap= document.getElementById('dots');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  let index = 0;
+
+  slides.forEach((_,i)=>{
+    const b=document.createElement('button');
+    b.className='dot'+(i===0?' on':'');
+    b.addEventListener('click',()=>goTo(i));
+    dotsWrap.appendChild(b);
+  });
+  const dots=[...dotsWrap.children];
+
+  function goTo(i){
+    index=Math.max(0,Math.min(total-1,i));
+    track.style.transform='translateX('+(-index*SLIDE_W)+'px)';
+    dots.forEach((d,n)=>d.classList.toggle('on',n===index));
+    prev.classList.toggle('hidden',index===0);
+    next.classList.toggle('hidden',index===total-1);
+  }
+  prev.addEventListener('click',()=>goTo(index-1));
+  next.addEventListener('click',()=>goTo(index+1));
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowLeft')goTo(index-1);
+    if(e.key==='ArrowRight')goTo(index+1);
+  });
+  let sx=0;
+  track.addEventListener('pointerdown',e=>sx=e.clientX);
+  track.addEventListener('pointerup',e=>{
+    const dx=e.clientX-sx;
+    if(dx<-45)goTo(index+1);
+    if(dx>45)goTo(index-1);
+  });
+  goTo(0);
+</script>
+</body>
+</html>
