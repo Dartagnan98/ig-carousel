@@ -15,7 +15,15 @@ Do not redesign. Do not ask about brand colors, fonts, or layout. Pick the templ
 
 ## Templates
 
-Three locked styles. **Ask the user which one (or pick by fit) before writing content.**
+Three locked styles: **`blue`**, **`orange`**, **`terminal`** (clay-Joe).
+
+**Reading the invocation arguments (e.g. `/ig-carousel blue clean buyer's consultation`):**
+- First recognized word that is `blue` / `orange` / `terminal` (or `joe`/`clay`) → the template. Use it directly, do not ask.
+- The word `clean` (or `plain`) → render without the avatar (blue/orange only; terminal always has Joe).
+- Everything else → the **topic**. If a topic is given, draft the slide outline from it; if not, ask one short question for the topic.
+- If NO template word is given, then ask which of the three, or pick by fit.
+
+Do not ask about design, fonts, or colors — those are locked.
 
 | Style | File | Render with | Edit |
 |---|---|---|---|
