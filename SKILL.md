@@ -1,15 +1,44 @@
 ---
 name: ig-carousel
-description: "Generate Instagram carousel posts from a locked design template. Only the content varies; the clay-Joe HPA design stays identical every time. Use when the user says 'carousel', 'IG carousel', 'Instagram carousel', 'make me a carousel', 'slide deck for Instagram', or 'ig-carousel'."
+description: "Generate Instagram carousel posts from a locked design template. Pick one of three styles (clay-Joe terminal, blue-asterisk, orange-machine); only the content varies, the design stays identical every time. Use when the user says 'carousel', 'IG carousel', 'Instagram carousel', 'make me a carousel', 'slide deck for Instagram', or 'ig-carousel'."
 metadata:
-  version: 2.0.0
+  version: 3.1.0
 ---
 
 # Instagram Carousel Generator
 
-This skill produces Instagram carousels from a **fixed design template**. The design is locked: clay-Joe character, circuit-board background, terminal cards, HPA branding, fonts, colors, layout — none of it changes. The ONLY thing that varies per carousel is the content in `slidesData`.
+This skill produces Instagram carousels from **fixed design templates**. The design is locked — fonts, colors, layout never change. The ONLY thing that varies per carousel is the content.
 
-Do not redesign. Do not ask about brand colors, fonts, or layout. Take the topic, write the content, drop it into the template.
+Do not redesign. Do not ask about brand colors, fonts, or layout. Pick the template, write the content, render.
+
+---
+
+## Templates
+
+Three locked styles. **Ask the user which one (or pick by fit) before writing content.**
+
+| Style | File | Render with | Edit |
+|---|---|---|---|
+| **clay-joe** — HPA terminal (cream, circuit board, clay-Joe, terminal cards) | `template.html` | `export.mjs` (http-served, see below) | `slidesData` array |
+| **blue-asterisk** — electric-blue, heavy grotesk headline, asterisk motif, fanned HOOK/VALUE/FRAME/PROOF/CTA cards, "swipe to steal" | `carousel-blue.html` | `render.mjs` (file path) | slide HTML inline |
+| **orange-machine** — cream + rounded frame, orange highlight boxes, doc-card fan, pixel mascot, serif byline | `carousel-orange.html` | `render.mjs` (file path) | slide HTML inline |
+
+**blue-asterisk / orange-machine** are native 1080×1350 multi-slide files (`.slide` divs), self-contained (fonts in `assets/*.woff2`). Both can render **with or without the host avatar** (Dartagnan's tattooed cartoon, on the cover + CTA of blue, the CTA of orange — poses in `assets/pose-*.png`).
+
+**Invocation — pick template + avatar variant by argument:**
+```bash
+cd ~/.claude/skills/ig-carousel
+node render.mjs blue                  # blue, WITH avatar
+node render.mjs blue --no-avatar      # blue, WITHOUT avatar (clean reference look)
+node render.mjs orange                # orange, WITH avatar
+node render.mjs orange --no-avatar    # orange, WITHOUT avatar
+node render.mjs orange --no-avatar /tmp/out   # custom out dir
+```
+`--no-avatar` adds `body.no-avatar` which hides every `.me` element. Outputs `slide-01.jpg … slide-NN.jpg` at 1080×1350, no http server needed.
+
+To change the **content**: copy the template (`cp carousel-blue.html my-deck.html`), edit the headline/sub/bullets/CTA text inside each `.slide` (keep structure + classes), then `node render.mjs my-deck.html [--no-avatar]`.
+
+The rest of this doc covers **clay-joe** (`template.html` + `slidesData` + `export.mjs`).
 
 ---
 
@@ -108,7 +137,11 @@ Only do this when the user asks to post/publish. Posting is public and irreversi
    ```
    Take the numeric Instagram Business account id → `ig_user_id`.
 3. **Draft the caption.** Match the carousel: short hook, the 5 moves or topic beats, then the outro CTA wording (e.g. `Comment "FRAMEWORK" 👇`). Max 2,200 chars, max 30 hashtags.
-4. **Get explicit user confirmation.** Show the user the exported slide images, the final slide order, and the draft caption. Wait for a clear "yes" in chat before publishing. Do NOT publish on assumed permission — publishing public content always requires confirmation.
+4. **Confirm before posting (MANDATORY).** Open the exported slides so the user can see them:
+   ```bash
+   open /tmp/carousel-export/*.jpg
+   ```
+   Then ask: *"This posts to @<account>. Reply POST to submit, or tell me what to change."* Wait for an explicit **POST** before publishing — never on assumed permission or a vague "looks good". If they change anything, re-render and ask again.
 5. **Create the carousel container** (2–10 slides, ordered):
    ```bash
    composio execute INSTAGRAM_CREATE_CAROUSEL_CONTAINER -d '{
@@ -122,7 +155,7 @@ Only do this when the user asks to post/publish. Posting is public and irreversi
    }'
    ```
    Store `response.data.id` as `creation_id`.
-6. **Publish:**
+6. **Publish** — ONLY after the Step 4 gate passed with an explicit "POST". If you're unsure whether it passed, stop and re-run the gate.
    ```bash
    composio execute INSTAGRAM_POST_IG_USER_MEDIA_PUBLISH -d '{
      "ig_user_id": "<id>",
@@ -153,4 +186,4 @@ This design is fixed. If the user wants a different look, that's a new template,
 1. Copy `template.html` → `/tmp/carousel-{topic-slug}.html` and `assets/` → `/tmp/carousel-assets/`.
 2. Rewrite only the `slidesData` EDIT ZONE in the output file.
 3. Preview via the http server, verify layout, iterate on specific slides.
-4. On request: export to JPEGs with `export.mjs`, then post the carousel to Instagram via Composio — after explicit user confirmation of the slides and caption.
+4. On request: export to JPEGs, then post to Instagram via Composio — but ONLY after **opening the slides for the user to see and getting an explicit "POST"** (Step 7.4). Never publish on a vague "looks good".

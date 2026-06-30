@@ -1,0 +1,151 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:'ArchivoBlack';src:url('assets/archivo-black.woff2') format('woff2');font-weight:400;font-display:block;}
+@font-face{font-family:'Anton';src:url('assets/anton.woff2') format('woff2');font-weight:400;font-display:block;}
+@font-face{font-family:'DMSerif';src:url('assets/dm-serif.woff2') format('woff2');font-weight:400;font-display:block;}
+@font-face{font-family:'Inter';src:url('assets/inter.woff2') format('woff2');font-weight:100 900;font-display:block;}
+:root{--orange:#e2632c;--ink:#191510;--cream:#f3efe5;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#222;}
+.slide{position:relative;width:1080px;height:1350px;background:var(--cream);overflow:hidden;font-family:'Inter',sans-serif;}
+.frame{position:absolute;inset:22px;border:2px solid #2b2620;border-radius:34px;pointer-events:none;}
+.pad{position:absolute;inset:58px;}
+.box{display:inline-block;background:var(--orange);color:var(--cream);border-radius:12px;padding:2px 18px 6px;line-height:1;}
+.count{position:absolute;right:0;top:-6px;font-weight:700;font-size:26px;color:#a99f8c;}
+.serif-foot{position:absolute;left:0;right:0;bottom:34px;display:flex;align-items:center;justify-content:center;gap:18px;}
+.serif-foot .l{width:80px;height:2px;background:#c8c0af;}
+.serif-foot .ft{font-weight:700;font-size:22px;letter-spacing:.22em;color:#9a9078;text-transform:uppercase;}
+/* ---- cover ---- */
+.eyebrow-wrap{position:relative;text-align:center;margin-top:14px;}
+.mark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-1.5deg);width:680px;height:58px;background:var(--orange);border-radius:8px 16px 10px 14px;}
+.eyebrow{position:relative;font-family:'Anton';font-size:36px;letter-spacing:.02em;color:var(--ink);text-transform:uppercase;}
+.hl{margin-top:74px;font-family:'ArchivoBlack';font-size:82px;line-height:1.22;letter-spacing:-.03em;color:var(--ink);text-transform:uppercase;text-align:left;}
+.hl .box.r{transform:rotate(1.5deg);} .hl .box{transform:rotate(-1deg);}
+.subc{margin-top:34px;text-align:center;font-size:38px;font-weight:600;color:#2c2720;}
+.art{position:absolute;left:0;right:0;top:560px;height:430px;}
+.doc{position:absolute;width:188px;height:236px;border-radius:14px;border:3px solid var(--ink);transform-origin:bottom center;box-shadow:0 14px 26px -14px rgba(25,21,16,.5);padding:20px 18px;}
+.doc .ln{height:7px;border-radius:7px;margin-bottom:11px;}
+.doc .sq{width:46px;height:46px;border-radius:7px;margin-top:6px;}
+.mascot{position:absolute;right:40px;bottom:6px;width:230px;height:170px;}
+.name{position:absolute;left:0;right:0;bottom:150px;text-align:center;font-family:'DMSerif';font-size:62px;letter-spacing:.14em;color:var(--ink);}
+/* ---- content ---- */
+.ct .steptag{position:absolute;left:0;top:4px;font-family:'Anton';font-size:30px;letter-spacing:.06em;color:var(--cream);background:var(--orange);padding:11px 24px;border-radius:8px;text-transform:uppercase;}
+.ct .num{position:absolute;right:14px;top:74px;font-family:'ArchivoBlack';font-size:280px;line-height:.8;color:rgba(226,99,44,.13);z-index:0;}
+.ct .h{position:absolute;left:0;right:90px;top:150px;font-family:'ArchivoBlack';font-size:80px;line-height:1.14;letter-spacing:-.03em;color:var(--ink);text-transform:uppercase;z-index:2;}
+.ct .h .box{transform:rotate(-1deg);}
+.ct .pts{position:absolute;left:0;right:0;top:472px;bottom:128px;background:#faf6ec;border:2px solid #2b2620;border-radius:28px;
+  padding:60px 58px;display:flex;flex-direction:column;justify-content:center;gap:46px;box-shadow:0 18px 32px -20px rgba(25,21,16,.4);}
+.ct .pt{display:flex;align-items:flex-start;gap:26px;font-size:46px;font-weight:600;line-height:1.18;color:#2c2720;}
+.ct .pt .sq{width:36px;height:36px;border-radius:9px;background:var(--orange);margin-top:8px;flex:none;box-shadow:inset 0 0 0 5px #faf6ec,0 0 0 2px var(--orange);}
+.ct .pt b{color:var(--ink);font-weight:800;}
+.ct .mini{position:absolute;right:48px;top:340px;width:184px;height:136px;z-index:3;filter:drop-shadow(0 8px 10px rgba(25,21,16,.22));}
+/* ---- cta ---- */
+.cta-h{position:absolute;left:0;right:60px;top:200px;font-family:'ArchivoBlack';font-size:96px;line-height:1.12;letter-spacing:-.03em;color:var(--ink);text-transform:uppercase;}
+.cta-h .box{transform:rotate(-1deg);}
+.comment{position:absolute;left:0;right:0;top:560px;background:var(--ink);border-radius:26px;padding:48px 52px;color:var(--cream);}
+.comment .l{font-size:36px;font-weight:700;opacity:.8;}
+.comment .w{font-family:'ArchivoBlack';font-size:58px;line-height:1;margin-top:10px;color:var(--orange);}
+.comment .d{font-size:34px;font-weight:600;opacity:.9;margin-top:18px;}
+.cta-mascot{position:absolute;right:60px;bottom:150px;width:210px;height:156px;}
+.me{position:absolute;z-index:5;pointer-events:none;filter:drop-shadow(0 18px 24px rgba(25,21,16,.32));}
+.me.flip{transform:scaleX(-1);}
+body.no-avatar .me{display:none;}
+body.no-avatar .comment{right:74px!important;}
+body.no-avatar .comment .w{font-size:90px;}
+/* with-avatar content slides: keep the card wide, figure is a bottom-right accent, hide pixel mascot */
+body:not(.no-avatar) .ct .pts{right:370px;}
+body:not(.no-avatar) .ct .mini{display:none;}
+</style></head><body>
+
+<!-- 1 COVER -->
+<div class="slide"><div class="frame"></div><div class="pad">
+  <div class="eyebrow-wrap"><span class="mark"></span><span class="eyebrow">Agencies just lost their edge</span></div>
+  <span class="count">1/8</span>
+  <div class="hl">SOMEONE <span class="box">JUST</span><br><span class="box r">LEAKED</span> THE <span class="box">$10K</span><br>CAROUSEL MACHINE.</div>
+  <div class="subc">And released it for free. Here's how to use it.</div>
+  <div class="art">
+    <div class="doc" style="left:150px;bottom:0;background:var(--cream);transform:rotate(-18deg)"><div class="ln" style="width:80%;background:var(--ink)"></div><div class="ln" style="width:60%;background:#cabfa9"></div><div class="ln" style="width:70%;background:#cabfa9"></div><div class="sq" style="background:var(--orange)"></div></div>
+    <div class="doc" style="left:250px;bottom:14px;background:var(--orange);transform:rotate(-9deg)"><div class="ln" style="width:80%;background:var(--ink)"></div><div class="ln" style="width:55%;background:#f6d9c6"></div><div class="ln" style="width:68%;background:#f6d9c6"></div><div class="sq" style="background:var(--ink)"></div></div>
+    <div class="doc" style="left:360px;bottom:20px;background:var(--ink);transform:rotate(-1deg)"><div class="ln" style="width:80%;background:var(--orange)"></div><div class="ln" style="width:58%;background:#5b554a"></div><div class="ln" style="width:70%;background:#5b554a"></div><div class="sq" style="background:var(--orange)"></div></div>
+    <div class="doc" style="left:470px;bottom:12px;background:var(--cream);transform:rotate(8deg)"><div class="ln" style="width:78%;background:var(--ink)"></div><div class="ln" style="width:56%;background:#cabfa9"></div><div class="ln" style="width:66%;background:#cabfa9"></div><div class="sq" style="background:var(--orange)"></div></div>
+    <span class="mascot">{{M}}</span>
+  </div>
+  <div class="name">CHARLES J DOVE</div>
+  <div class="serif-foot"><span class="l"></span><span class="ft">A Charlie Automates Guide</span><span class="l"></span></div>
+</div></div>
+
+<!-- 2 -->
+<div class="slide ct"><div class="frame"></div><div class="pad">
+  <span class="steptag">Step 01</span><span class="count">2/8</span><div class="num">1</div>
+  <div class="h">PICK A <span class="box">PAINFUL</span> TOPIC</div>
+  <div class="pts"><div class="pt"><span class="sq"></span><span>Solve <b>one real problem</b> your audience has</span></div><div class="pt"><span class="sq"></span><span>Niche beats broad, <b>every time</b></span></div><div class="pt"><span class="sq"></span><span>If it doesn't sting, <b>skip it</b></span></div></div>
+  <span class="mini">{{M}}</span>
+  <div class="serif-foot"><span class="l"></span><span class="ft">A Charlie Automates Guide</span><span class="l"></span></div>
+</div></div>
+
+<!-- 3 -->
+<div class="slide ct"><div class="frame"></div><div class="pad">
+  <span class="steptag">Step 02</span><span class="count">3/8</span><div class="num">2</div>
+  <div class="h">WRITE THE <span class="box">HOOK</span> FIRST</div>
+  <div class="pts"><div class="pt"><span class="sq"></span><span>Lead with the <b>outcome</b>, not the setup</span></div><div class="pt"><span class="sq"></span><span>Make a claim that feels <b>almost too bold</b></span></div><div class="pt"><span class="sq"></span><span>It earns the swipe or <b>nothing else matters</b></span></div></div>
+  <span class="mini">{{M}}</span>
+  <div class="serif-foot"><span class="l"></span><span class="ft">A Charlie Automates Guide</span><span class="l"></span></div>
+</div></div>
+
+<!-- 4 -->
+<div class="slide ct"><div class="frame"></div><div class="pad">
+  <span class="steptag">Step 03</span><span class="count">4/8</span><div class="num">3</div>
+  <div class="h">ONE <span class="box">IDEA</span> PER SLIDE</div>
+  <div class="pts"><div class="pt"><span class="sq"></span><span>Each slide does <b>exactly one job</b></span></div><div class="pt"><span class="sq"></span><span>Big text, <b>few words</b></span></div><div class="pt"><span class="sq"></span><span>If it needs a paragraph, <b>split it</b></span></div></div>
+  <span class="mini">{{M}}</span>
+  <div class="serif-foot"><span class="l"></span><span class="ft">A Charlie Automates Guide</span><span class="l"></span></div>
+</div></div>
+
+<!-- 5 -->
+<div class="slide ct"><div class="frame"></div><div class="pad">
+  <span class="steptag">Step 04</span><span class="count">5/8</span><div class="num">4</div>
+  <div class="h">DESIGN IT <span class="box">FAST</span></div>
+  <div class="pts"><div class="pt"><span class="sq"></span><span>Lock <b>one template</b>, reuse it</span></div><div class="pt"><span class="sq"></span><span>Two fonts, <b>one accent color</b></span></div><div class="pt"><span class="sq"></span><span>Consistency reads as <b>credibility</b></span></div></div>
+  <span class="mini">{{M}}</span>
+  <div class="serif-foot"><span class="l"></span><span class="ft">A Charlie Automates Guide</span><span class="l"></span></div>
+</div></div>
+
+<!-- 6 -->
+<div class="slide ct"><div class="frame"></div><div class="pad">
+  <span class="steptag">Step 05</span><span class="count">6/8</span><div class="num">5</div>
+  <div class="h">STACK THE <span class="box">PROOF</span></div>
+  <div class="pts"><div class="pt"><span class="sq"></span><span>Real <b>numbers</b> and screenshots</span></div><div class="pt"><span class="sq"></span><span>Before vs after beats <b>adjectives</b></span></div><div class="pt"><span class="sq"></span><span>Borrow proof if you <b>don't have your own</b></span></div></div>
+  <span class="mini">{{M}}</span>
+  <div class="serif-foot"><span class="l"></span><span class="ft">A Charlie Automates Guide</span><span class="l"></span></div>
+</div></div>
+
+<!-- 7 -->
+<div class="slide ct"><div class="frame"></div><div class="pad">
+  <span class="steptag">Step 06</span><span class="count">7/8</span><div class="num">6</div>
+  <div class="h">CLOSE WITH A <span class="box">CTA</span></div>
+  <div class="pts"><div class="pt"><span class="sq"></span><span>Ask for <b>one</b> action, not three</span></div><div class="pt"><span class="sq"></span><span>A comment keyword <b>beats a link</b></span></div><div class="pt"><span class="sq"></span><span>Make saying yes <b>effortless</b></span></div></div>
+  <span class="mini">{{M}}</span>
+  <div class="serif-foot"><span class="l"></span><span class="ft">A Charlie Automates Guide</span><span class="l"></span></div>
+</div></div>
+
+<!-- 8 CTA -->
+<div class="slide cta ct"><div class="frame"></div><div class="pad">
+  <span class="count">8/8</span>
+  <div class="cta-h">GET THE FULL <span class="box">PLAYBOOK</span></div>
+  <div class="comment" style="right:500px"><div class="l">Comment</div><div class="w">“CAROUSEL”</div><div class="d">and I'll send you the machine + the prompts.</div></div>
+  <img class="me flip" style="right:-80px;bottom:16px;height:860px" src="assets/pose-pointing-cutout.png">
+  <div class="serif-foot"><span class="l"></span><span class="ft">A Charlie Automates Guide</span><span class="l"></span></div>
+</div></div>
+
+<script>
+const M='<svg viewBox="0 0 230 170" shape-rendering="crispEdges"><g fill="#e2632c"><rect x="20" y="60" width="150" height="80"/><rect x="150" y="30" width="60" height="80"/><rect x="195" y="20" width="15" height="20"/><rect x="170" y="20" width="15" height="20"/><rect x="30" y="140" width="22" height="28"/><rect x="70" y="140" width="22" height="28"/><rect x="110" y="140" width="22" height="28"/><rect x="148" y="140" width="22" height="28"/></g><g fill="#191510"><rect x="172" y="52" width="14" height="16"/><rect x="196" y="52" width="14" height="16"/></g></svg>';
+document.body.innerHTML=document.body.innerHTML.replace(/\{\{M\}\}/g,M);
+// rotate the host avatar through content slides (different pose each = "doing different things")
+const POSES=['arms-crossed','casual','victory','holding-phone','arms-crossed','casual'];
+document.querySelectorAll('.slide.ct:not(.cta)').forEach((s,i)=>{
+  const img=document.createElement('img'); img.className='me';
+  img.src='assets/pose-'+POSES[i%POSES.length]+'-cutout.png';
+  img.style.cssText='right:-46px;bottom:74px;height:620px;z-index:4';
+  (s.querySelector('.pad')||s).appendChild(img);
+});
+</script>
+</body></html>
