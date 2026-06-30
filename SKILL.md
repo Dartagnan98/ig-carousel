@@ -25,16 +25,18 @@ Three locked styles. **Ask the user which one (or pick by fit) before writing co
 
 **blue-asterisk / orange-machine** are native 1080×1350 multi-slide files (`.slide` divs), self-contained (fonts in `assets/*.woff2`). Both can render **with or without the host avatar** (Dartagnan's tattooed cartoon, on the cover + CTA of blue, the CTA of orange — poses in `assets/pose-*.png`).
 
-**Invocation — pick template + avatar variant by argument:**
+**Invocation — one command for ALL three templates: the design name, then optionally `clean`.**
 ```bash
 cd ~/.claude/skills/ig-carousel
-node render.mjs blue                  # blue, WITH avatar
-node render.mjs blue --no-avatar      # blue, WITHOUT avatar (clean reference look)
-node render.mjs orange                # orange, WITH avatar
-node render.mjs orange --no-avatar    # orange, WITHOUT avatar
-node render.mjs orange --no-avatar /tmp/out   # custom out dir
+node render.mjs list           # show templates
+node render.mjs blue           # blue, WITH you
+node render.mjs blue clean     # blue, no avatar
+node render.mjs orange         # orange, WITH you
+node render.mjs orange clean   # orange, no avatar
+node render.mjs terminal       # clay-Joe terminal deck (always has Joe)
+node render.mjs orange clean /tmp/out   # custom out dir
 ```
-`--no-avatar` adds `body.no-avatar` which hides every `.me` element. Outputs `slide-01.jpg … slide-NN.jpg` at 1080×1350, no http server needed.
+`clean` (aliases: `plain`, `--no-avatar`) hides the avatar (blue/orange only — `terminal` always has Joe). `terminal` (aliases: `joe`, `clay`) renders the clay-Joe `template.html`; render.mjs spins up its own temp http server + 2.5× capture automatically, so you don't need `export.mjs` anymore. All output `slide-01.jpg … slide-NN.jpg` at 1080×1350.
 
 To change the **content**: copy the template (`cp carousel-blue.html my-deck.html`), edit the headline/sub/bullets/CTA text inside each `.slide` (keep structure + classes), then `node render.mjs my-deck.html [--no-avatar]`.
 
